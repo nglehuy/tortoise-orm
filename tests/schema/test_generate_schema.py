@@ -1192,10 +1192,10 @@ CREATE UNIQUE INDEX "uidx_team_team_team_re_d994df" ON "team_team" ("team_rel_id
             """CREATE TABLE "postgres_fields" (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "tsvector" TSVECTOR NOT NULL,
-    "text_array" TEXT[] NOT NULL DEFAULT ('a','b','c'),
-    "varchar_array" VARCHAR(32)[] NOT NULL DEFAULT ('aa','bbb','cccc'),
-    "int_array" INT[] DEFAULT (1,2,3),
-    "real_array" REAL[] NOT NULL DEFAULT (1.1,2.2,3.3)
+    "text_array" TEXT[] NOT NULL DEFAULT '{"a","b","c"}',
+    "varchar_array" VARCHAR(32)[] NOT NULL DEFAULT '{"aa","bbb","cccc"}',
+    "int_array" INT[] DEFAULT '{1,2,3}',
+    "real_array" REAL[] NOT NULL DEFAULT '{1.1,2.2,3.3}'
 );
 COMMENT ON COLUMN "postgres_fields"."real_array" IS 'this is array of real numbers';""",
         )
@@ -1208,10 +1208,10 @@ COMMENT ON COLUMN "postgres_fields"."real_array" IS 'this is array of real numbe
             """CREATE TABLE IF NOT EXISTS "postgres_fields" (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "tsvector" TSVECTOR NOT NULL,
-    "text_array" TEXT[] NOT NULL DEFAULT ('a','b','c'),
-    "varchar_array" VARCHAR(32)[] NOT NULL DEFAULT ('aa','bbb','cccc'),
-    "int_array" INT[] DEFAULT (1,2,3),
-    "real_array" REAL[] NOT NULL DEFAULT (1.1,2.2,3.3)
+    "text_array" TEXT[] NOT NULL DEFAULT '{"a","b","c"}',
+    "varchar_array" VARCHAR(32)[] NOT NULL DEFAULT '{"aa","bbb","cccc"}',
+    "int_array" INT[] DEFAULT '{1,2,3}',
+    "real_array" REAL[] NOT NULL DEFAULT '{1.1,2.2,3.3}'
 );
 COMMENT ON COLUMN "postgres_fields"."real_array" IS 'this is array of real numbers';""",
         )

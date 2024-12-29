@@ -26,16 +26,20 @@ escape_string = _escape_unicode
 
 
 def escape_item(val: Any, mapping=None) -> str:
+    if isinstance(val, str):
+        return f'"{val}"'
+
     if mapping is None:
         mapping = encoders
+
     encoder = mapping.get(type(val))
 
     # Fallback to default when no encoder found
     if not encoder:
         try:
             encoder = mapping[str]
-        except KeyError:
-            raise TypeError("no default type converter defined")
+        except KeyError as exc:
+            raise TypeError("no default type converter defined") from exc
 
     val = encoder(val, mapping)
     return val
@@ -54,7 +58,7 @@ def escape_sequence(val: Sequence, mapping=None) -> str:
     for item in val:
         quoted = escape_item(item, mapping)
         n.append(quoted)
-    return "(" + ",".join(n) + ")"
+    return "'{" + ",".join(n) + "}'"
 
 
 def escape_set(val: Set, mapping=None) -> str:
