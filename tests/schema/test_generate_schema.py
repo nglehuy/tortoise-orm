@@ -1094,8 +1094,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS "uidx_teamevents_event_i_664dbc" ON "teamevent
     "gist" TSVECTOR NOT NULL,
     "sp_gist" VARCHAR(200) NOT NULL,
     "hash" VARCHAR(200) NOT NULL,
-    "partial" VARCHAR(200) NOT NULL,
-    "array" TEXT[] NOT NULL  DEFAULT ('a','b','c')
+    "partial" VARCHAR(200) NOT NULL
 );
 CREATE INDEX "idx_index_bloom_280137" ON "index" USING BLOOM ("bloom");
 CREATE INDEX "idx_index_brin_a54a00" ON "index" USING BRIN ("brin");
@@ -1119,8 +1118,7 @@ CREATE INDEX "idx_index_partial_c5be6a" ON "index" USING  ("partial") WHERE id =
     "gist" TSVECTOR NOT NULL,
     "sp_gist" VARCHAR(200) NOT NULL,
     "hash" VARCHAR(200) NOT NULL,
-    "partial" VARCHAR(200) NOT NULL,
-    "array" TEXT[] NOT NULL  DEFAULT ('a','b','c')
+    "partial" VARCHAR(200) NOT NULL
 );
 CREATE INDEX IF NOT EXISTS "idx_index_bloom_280137" ON "index" USING BLOOM ("bloom");
 CREATE INDEX IF NOT EXISTS "idx_index_brin_a54a00" ON "index" USING BRIN ("brin");
@@ -1184,6 +1182,36 @@ CREATE TABLE "team_team" (
 );
 CREATE UNIQUE INDEX "uidx_team_team_team_re_d994df" ON "team_team" ("team_rel_id", "team_id");
 """.strip(),
+        )
+
+    async def test_pgfields_unsafe(self):
+        await self.init_for("tests.schema.models_postgres_fields")
+        sql = get_schema_sql(connections.get("default"), safe=False)
+        self.assertEqual(
+            sql,
+            """CREATE TABLE "postgres_fields" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "tsvector" TSVECTOR NOT NULL,
+    "text_array" TEXT[] NOT NULL  DEFAULT ('a','b','c'),
+    "varchar_array" VARCHAR(32)[] NOT NULL  DEFAULT ('aa','bbb','cccc'),
+    "int_array" INT[] NOT NULL  DEFAULT (1,2,3),
+    "real_array" REAL[] NOT NULL  DEFAULT (1.1,2.2,3.3)
+);""",
+        )
+
+    async def test_pgfields_safe(self):
+        await self.init_for("tests.schema.models_postgres_fields")
+        sql = get_schema_sql(connections.get("default"), safe=True)
+        self.assertEqual(
+            sql,
+            """CREATE TABLE IF NOT EXISTS "postgres_fields" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "tsvector" TSVECTOR NOT NULL,
+    "text_array" TEXT[] NOT NULL  DEFAULT ('a','b','c'),
+    "varchar_array" VARCHAR(32)[] NOT NULL  DEFAULT ('aa','bbb','cccc'),
+    "int_array" INT[] NOT NULL  DEFAULT (1,2,3),
+    "real_array" REAL[] NOT NULL  DEFAULT (1.1,2.2,3.3)
+);""",
         )
 
 

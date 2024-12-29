@@ -1,0 +1,13 @@
+from tortoise import Model
+from tortoise.contrib.postgres.fields import TSVectorField, ArrayField
+
+
+class PostgresFields(Model):
+    tsvector = TSVectorField()
+    text_array = ArrayField(element_type="text", default=["a", "b", "c"])
+    varchar_array = ArrayField(element_type="varchar(32)", default=["aa", "bbb", "cccc"])
+    int_array = ArrayField(element_type="int", default=[1, 2, 3])
+    real_array = ArrayField(element_type="real", default=[1.1, 2.2, 3.3])
+
+    class Meta:
+        table = "postgres_fields"
